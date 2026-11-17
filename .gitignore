@@ -34,8 +34,9 @@ data/anpr.db
 # Plate crop images
 data/plate_crops/
 
-# Input videos (usually large)
-data/input_videos/
+# Input videos (large videos excluded, demo clip included)
+data/input_videos/*
+!data/input_videos/demo_vehicle.mp4
 
 # Secrets and local config
 .env

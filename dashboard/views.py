@@ -94,8 +94,15 @@ def live_monitoring_view() -> None:
                 "Upload a video", type=["mp4", "avi", "mov", "mkv"]
             )
             existing = _list_input_videos()
+            default_ix = 0
+            options = ["— select —"] + existing
+            if "demo_vehicle.mp4" in existing:
+                default_ix = options.index("demo_vehicle.mp4")
+
             chosen_existing = st.selectbox(
-                "Or choose existing video", ["— select —"] + existing
+                "Or choose sample video",
+                options=options,
+                index=default_ix,
             )
             if uploaded:
                 import tempfile
@@ -112,6 +119,11 @@ def live_monitoring_view() -> None:
         else:
             cam_index = st.number_input("Webcam index", min_value=0, max_value=10, value=0)
             cam_or_path = int(cam_index)
+            st.info(
+                "ℹ️ **Note on Webcams:** Accesses a hardware camera connected directly to the server host. "
+                "In cloud deployments (like Streamlit Cloud), the cloud VM does not have a physical webcam. "
+                "Please choose **Video File** to select the bundled sample or upload an MP4."
+            )
 
         camera_id = st.text_input("Camera ID", value="CAM001").strip() or "CAM001"
         det_conf = st.slider("Detection confidence", 0.1, 1.0, 0.4, 0.05)
@@ -203,7 +215,16 @@ def live_monitoring_view() -> None:
                             m3.metric("Last plate", plates_seen[-1] if plates_seen else "—")
 
                 except Exception as exc:
-                    st.error(f"Pipeline error: {exc}")
+                    err_msg = str(exc)
+                    if isinstance(cam_or_path, int) and "Could not open video source" in err_msg:
+                        st.error(
+                            f"❌ Could not open webcam index `{cam_or_path}`. "
+                            "When hosted on the cloud (e.g. Streamlit Cloud), the cloud server "
+                            "does not have an attached physical webcam device. Please switch Source to "
+                            "**Video File** to use the bundled sample clip or upload your own video."
+                        )
+                    else:
+                        st.error(f"Pipeline error: {exc}")
                 finally:
                     st.session_state["monitoring_running"] = False
                     status_placeholder.info("Processing complete.")
