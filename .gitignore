@@ -1,0 +1,61 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Model weights — do NOT commit these to git
+models/*.pt
+models/*.onnx
+models/*.weights
+models/*.pb
+*.pt
+*.onnx
+
+# Local database
+data/anpr.db
+*.db
+
+# Plate crop images
+data/plate_crops/
+
+# Input videos (usually large)
+data/input_videos/
+
+# Secrets and local config
+.env
+*.env.local
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# pytest cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# EasyOCR model cache
+~/.EasyOCR/

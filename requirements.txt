@@ -1,0 +1,18 @@
+# Core ML / vision
+opencv-python==4.10.0.84
+ultralytics==8.3.145
+easyocr==1.7.2
+
+# Dashboard
+streamlit==1.41.1
+pandas==2.2.3
+
+# Image processing
+pillow==11.1.0
+
+# Testing
+pytest==8.3.4
+pytest-cov==6.0.0
+
+# Utilities
+python-dotenv==1.0.1
