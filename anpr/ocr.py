@@ -54,6 +54,7 @@ class PlateOCR:
         model_storage_dir: Union[str, Path, None] = None,
         user_network_dir: Union[str, Path, None] = None,
         confidence_threshold: float | None = None,
+        download_enabled: bool = True,
     ) -> None:
         """Initialize EasyOCR reader once.
 
@@ -63,6 +64,7 @@ class PlateOCR:
             model_storage_dir: Directory where model weights are stored.
             user_network_dir: Directory for custom networks.
             confidence_threshold: Default minimum confidence for recognized fragments.
+            download_enabled: Whether to allow EasyOCR to download models if missing.
         """
         self.model_storage_dir = (
             Path(model_storage_dir) if model_storage_dir else EASYOCR_MODEL_DIR
@@ -80,16 +82,17 @@ class PlateOCR:
         self.user_network_dir.mkdir(parents=True, exist_ok=True)
 
         logger.info(
-            "Initializing EasyOCR Reader (gpu=%s, model_dir=%s)",
+            "Initializing EasyOCR Reader (gpu=%s, model_dir=%s, download_enabled=%s)",
             gpu,
             self.model_storage_dir,
+            download_enabled,
         )
         self.reader = easyocr.Reader(
             lang_list=list(languages),
             gpu=gpu,
             model_storage_directory=str(self.model_storage_dir),
             user_network_directory=str(self.user_network_dir),
-            download_enabled=False,
+            download_enabled=download_enabled,
         )
         logger.info("EasyOCR Reader initialized successfully.")
 
