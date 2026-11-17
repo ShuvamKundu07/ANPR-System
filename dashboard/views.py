@@ -127,7 +127,7 @@ def live_monitoring_view() -> None:
 
         camera_id = st.text_input("Camera ID", value="CAM001").strip() or "CAM001"
         det_conf = st.slider("Detection confidence", 0.1, 1.0, 0.4, 0.05)
-        ocr_conf = st.slider("OCR confidence threshold", 0.1, 1.0, 0.3, 0.05)
+        ocr_conf = st.slider("OCR confidence threshold", 0.05, 1.0, 0.15, 0.05)
         dup_win = st.number_input(
             "Duplicate-suppression window (sec)", min_value=1, max_value=300, value=30
         )

@@ -136,12 +136,31 @@ class PlateOCR:
             logger.debug("Received empty image array for OCR.")
             return OCRResult()
 
+        # Scale small crops up to a minimum height for CRAFT detector readability
+        h, w = img_arr.shape[:2]
+        if h < 60 and w > 0:
+            scale = max(2.0, 70.0 / h)
+            ocr_input = cv2.resize(
+                img_arr,
+                (int(round(w * scale)), int(round(h * scale))),
+                interpolation=cv2.INTER_CUBIC,
+            )
+        else:
+            ocr_input = img_arr
+
         try:
-            # EasyOCR readtext returns list of [bbox, text, confidence]
-            raw_results = self.reader.readtext(img_arr)
-        except Exception as err:
-            logger.error("EasyOCR inference failed: %s", err, exc_info=True)
-            return OCRResult()
+            # EasyOCR readtext with alphanumeric plate allowlist
+            raw_results = self.reader.readtext(
+                ocr_input,
+                allowlist="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -",
+                detail=1,
+            )
+        except Exception:
+            try:
+                raw_results = self.reader.readtext(ocr_input, detail=1)
+            except Exception as err:
+                logger.error("EasyOCR inference failed: %s", err, exc_info=True)
+                return OCRResult()
 
         if not raw_results:
             return OCRResult()

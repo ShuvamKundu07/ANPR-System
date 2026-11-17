@@ -312,6 +312,9 @@ class ANPRPipeline:
         elif obs.is_valid_plate:
             box_color = (0, 255, 0)  # Green
             status_tag = f"{obs.plate_number} ({obs.ocr_result.confidence:.2f})"
+        elif obs.plate_number:
+            box_color = (0, 220, 255)  # Yellow
+            status_tag = f"{obs.plate_number} ({obs.ocr_result.confidence:.2f})"
         else:
             box_color = (0, 220, 255)  # Yellow
             status_tag = "PLATE (Low OCR)"
