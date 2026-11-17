@@ -10,33 +10,26 @@ This directory holds YOLO model weights used for license-plate detection.
 | Field            | Value                                                                 |
 |------------------|-----------------------------------------------------------------------|
 | **Name**         | YOLOv8n License Plate Detector                                        |
-| **Source**       | [keremberke/yolov8n-license-plate-detection](https://huggingface.co/keremberke/yolov8n-license-plate-detection) |
-| **Version**      | v1.0  (best.pt)                                                       |
+| **Source**       | [Muhammad-Zeerak-Khan/Automatic-License-Plate-Recognition-using-YOLOv8](https://github.com/Muhammad-Zeerak-Khan/Automatic-License-Plate-Recognition-using-YOLOv8) |
+| **File**         | `license_plate_detector.pt`                                           |
 | **Input size**   | 640 × 640 pixels                                                      |
-| **Classes**      | `license-plate` (single class, index 0)                               |
-| **License**      | [Creative Commons Attribution 4.0 (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/) |
-| **Paper / ref**  | Ultralytics YOLOv8 — [docs.ultralytics.com](https://docs.ultralytics.com) |
+| **Classes**      | `license_plate` (single class, index 0)                               |
+| **License**      | MIT (repository license — see source repo)                            |
+| **Framework**    | Ultralytics YOLOv8 — [docs.ultralytics.com](https://docs.ultralytics.com) |
 
 ### How to Obtain
 
 ```bash
-# Option A — Hugging Face Hub (recommended)
-pip install huggingface_hub
-python - <<'EOF'
-from huggingface_hub import hf_hub_download
-path = hf_hub_download(
-    repo_id="keremberke/yolov8n-license-plate-detection",
-    filename="best.pt",
-    local_dir="models",
-)
-print(f"Downloaded to: {path}")
-EOF
-mv models/best.pt models/license_plate_detector.pt
+curl -L -o models/license_plate_detector.pt \
+  "https://github.com/Muhammad-Zeerak-Khan/Automatic-License-Plate-Recognition-using-YOLOv8/raw/main/license_plate_detector.pt"
+```
 
-# Option B — Manual download
-# 1. Visit https://huggingface.co/keremberke/yolov8n-license-plate-detection
-# 2. Download best.pt
-# 3. Save as: models/license_plate_detector.pt
+Then verify it loads:
+
+```python
+from ultralytics import YOLO
+model = YOLO("models/license_plate_detector.pt")
+print(model.names)   # {0: 'license_plate'}
 ```
 
 ---
