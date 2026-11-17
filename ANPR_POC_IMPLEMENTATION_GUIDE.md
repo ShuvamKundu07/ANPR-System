@@ -327,7 +327,7 @@ match creates alert; repeated frames do not flood database.
 ## Phase 8 --- Streamlit Dashboard
 
 **Objective:** Build a dashboard for live monitoring, records, hotlist,
-and alerts.
+and alerts. (DONOT MAKE IT COMPLEX)
 
 ### Live Monitoring
 
@@ -457,18 +457,18 @@ All members should understand the complete pipeline.
 
 ## 7. Final Definition of Done
 
--   [ ] Video/webcam input works.
--   [ ] Suitable license-plate model detects plates.
--   [ ] Plate crops are generated and saved.
--   [ ] OCR returns text and confidence.
--   [ ] Text normalization and validation work.
--   [ ] Vehicle observations are stored in SQLite.
--   [ ] Hotlist matching works.
--   [ ] Alerts are generated and displayed.
--   [ ] Dashboard pages work.
--   [ ] Two-camera plate-based observation history is demonstrated.
--   [ ] Tests and measured results are documented.
--   [ ] Setup and demo instructions are reproducible.
+-   [x] Video/webcam input works.
+-   [x] Suitable license-plate model detects plates.
+-   [x] Plate crops are generated and saved.
+-   [x] OCR returns text and confidence.
+-   [x] Text normalization and validation work.
+-   [x] Vehicle observations are stored in SQLite.
+-   [x] Hotlist matching works.
+-   [x] Alerts are generated and displayed.
+-   [x] Dashboard pages work.
+-   [x] Two-camera plate-based observation history is demonstrated.
+-   [x] Tests and measured results are documented.
+-   [x] Setup and demo instructions are reproducible.
 
 ## 8. First Prompt to Give Antigravity
 

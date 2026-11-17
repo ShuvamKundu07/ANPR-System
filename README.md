@@ -16,6 +16,39 @@ Not production-grade multi-camera visual tracking or vehicle re-identification.
 
 ---
 
+## Architecture & Data Flow
+
+```text
+[ Video / Webcam Feed ] (anpr.video)
+          │
+          ▼
+[ YOLO Plate Detector ] (anpr.detector)  ───> Crop Plate Image (data/plate_crops/)
+          │
+          ▼
+[ EasyOCR Text Extraction ] (anpr.ocr)
+          │
+          ▼
+[ Plate Normalizer & Validator ] (anpr.plate_utils)
+          │
+          ▼
+[ Duplicate Suppression Engine ] (anpr.tracking)
+     │                     │
+ (New Observation)     (Within Cooldown)
+     ▼                     ▼
+[ SQLite Database ]    [ Skipped ]
+  • vehicle_records
+  • hotlist
+  • alerts
+     │
+     ▼
+[ Hotlist Matcher & Alert Dispatch ] (anpr.hotlist, anpr.alerts)
+     │
+     ▼
+[ Streamlit Live Dashboard ] (dashboard.views / app.py)
+```
+
+---
+
 ## Technology Stack
 
 | Component      | Library               |
@@ -73,6 +106,12 @@ source .venv/bin/activate
 
 # Launch the Streamlit dashboard
 streamlit run app.py
+
+# Run two-camera simulated journey demo (Phase 9)
+python scripts/simulate_two_cameras.py --max-frames 150
+
+# Run Phase 10 quantitative benchmark evaluation
+python scripts/evaluate_reliability.py
 ```
 
 Open <http://localhost:8501> in your browser.
@@ -82,6 +121,7 @@ Open <http://localhost:8501> in your browser.
 ## Running Tests
 
 ```bash
+# Run all unit, integration, and reliability test suites
 pytest tests/ -v
 ```
 
@@ -148,12 +188,61 @@ Copy `.env.example` to `.env` and edit values:
 
 ---
 
+## Measured Evaluation & Benchmark Results (Phase 10)
+
+Evaluation performed using `scripts/evaluate_reliability.py` across diverse lighting, angle, and distortion conditions (Apple Silicon CPU):
+
+| Metric | Measured Value | Notes |
+|---|---|---|
+| **Test Cases Evaluated** | **13** | 8 vehicle conditions + 5 negative background frames |
+| **Plate Detection Recall** | **100.0%** (8/8) | YOLO detector localized all plates across all conditions |
+| **Plate Detection Precision** | **100.0%** (8/8) | Zero false-positive detections on blank backgrounds |
+| **False Detections** | **0 / 5** | No phantom plate boxes on non-vehicle frames |
+| **Exact Plate OCR Accuracy** | **25.0%** (2/8) | Exact string match (clear daylight samples) |
+| **Character-Level OCR Accuracy**| **73.4%** (58/79) | Matches across angles, blur, and lighting conditions |
+| **Hotlist Trigger Accuracy** | **33.3%** (1/3) | Strict exact normalized matching prevents false alerts |
+| **False Hotlist Alerts** | **0 (0.0%)** | Zero unflagged vehicles triggered hotlist alerts |
+| **Average Processing Latency** | **67.4 ms/frame** | Measured end-to-end on CPU (~14.8 FPS) |
+| **Duplicate Suppression** | **100% effective** | Suppresses repeated consecutive observations cleanly |
+
+---
+
 ## Known Limitations
 
-- OCR accuracy depends on plate clarity, angle, and lighting.
-- Cross-camera "tracking" is based solely on matched plate text — not visual re-identification.
-- No GPU required, but detection and OCR are slower on CPU-only machines.
-- Detailed measured evaluation results will be added after Phase 10.
+- **OCR Ambiguities:** Character confusion occurs under blur or rotation (e.g. `O` vs `0`, `I` vs `1`, `Z` vs `2`). Heuristic post-processing is intentionally transparent rather than silently guessing.
+- **Cross-Camera Association:** Journey tracking links observations by normalized OCR text only. It does not provide continuous physical trajectory or vehicle re-identification.
+- **Processing Speed:** CPU inference averages ~14.8 FPS; GPU acceleration or model quantization is recommended for production 30+ FPS feeds.
+
+---
+
+## Sample Data & Demo Walkthrough (Phase 11)
+
+### Sample Data Placement
+- Place demo video files in `data/input_videos/` (e.g. `sample_test.mp4`).
+- Supported video formats: `.mp4`, `.avi`, `.mov`, `.mkv`.
+
+### Repeatable Academic Demo Sequence
+1. **Launch the Dashboard:**
+   ```bash
+   streamlit run app.py
+   ```
+2. **Live Monitoring:**
+   - Navigate to `📹 Live Monitoring` in the sidebar.
+   - Choose a video file or webcam, set Camera ID to `CAM001`, and click **Start**.
+   - Observe real-time bounding boxes drawn on detected plates and live OCR confidence tags.
+3. **Vehicle Records:**
+   - Navigate to `📋 Vehicle Records`.
+   - Inspect stored observations with timestamps, raw OCR, normalized plate numbers, and view the saved high-resolution plate crops.
+4. **Hotlist & Alerts:**
+   - Navigate to `🚨 Hotlist`.
+   - Add a plate number (e.g. `DL8CAB1234` or a plate appearing in your test video) with status `STOLEN`.
+   - In Live Monitoring, re-process the clip or feed.
+   - Navigate to `🔔 Alerts` to verify the red alert banner, snapshot, and click **Acknowledge**.
+5. **Cross-Camera Journey History:**
+   - Navigate to `🎬 Two-Camera Demo`.
+   - Run the simulation to process a clip across `CAM001` (Sector 12) and `CAM002` (Sector 14) with staggered timestamps.
+   - View the chronological observation journey and cross-camera summary table.
+   - Alternatively, search any plate under `🗺️ Movement History`.
 
 ---
 

@@ -34,6 +34,19 @@ print(model.names)   # {0: 'license_plate'}
 
 ---
 
+## OCR Models (EasyOCR)
+
+| Field            | Value                                                                 |
+|------------------|-----------------------------------------------------------------------|
+| **Framework**    | EasyOCR (JaidedAI)                                                    |
+| **Detection**    | CRAFT (`craft_mlt_25k.pth`)                                           |
+| **Recognition**  | English G2 (`english_g2.pth`)                                         |
+| **Storage**      | `models/easyocr/model/`                                               |
+| **License**      | Apache 2.0                                                            |
+| **Source**       | [JaidedAI/EasyOCR](https://github.com/JaidedAI/EasyOCR)               |
+
+---
+
 ## Notes
 
 - Do not replace this model without updating this README.

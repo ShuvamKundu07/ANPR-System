@@ -33,6 +33,8 @@ DETECTOR_CONFIDENCE: float = float(os.getenv("DETECTOR_CONFIDENCE", "0.4"))
 
 # ── OCR ───────────────────────────────────────────────────────────────────────
 OCR_CONFIDENCE_THRESHOLD: float = float(os.getenv("OCR_CONFIDENCE_THRESHOLD", "0.3"))
+EASYOCR_MODEL_DIR: Path = _path("EASYOCR_MODEL_DIR", "models/easyocr/model")
+EASYOCR_USER_NETWORK_DIR: Path = _path("EASYOCR_USER_NETWORK_DIR", "models/easyocr/user_network")
 
 # ── Camera ───────────────────────────────────────────────────────────────────
 DEFAULT_CAMERA_ID: int = int(os.getenv("DEFAULT_CAMERA_ID", "0"))

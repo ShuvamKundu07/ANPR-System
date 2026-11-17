@@ -22,8 +22,10 @@ models/*.pt
 models/*.onnx
 models/*.weights
 models/*.pb
+models/easyocr/
 *.pt
 *.onnx
+*.pth
 
 # Local database
 data/anpr.db
