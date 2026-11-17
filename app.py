@@ -14,6 +14,7 @@ Navigation via sidebar:
 """
 
 import streamlit as st
+from anpr.detector import ensure_model_weights
 
 st.set_page_config(
     page_title="ANPR — License Plate Recognition",
@@ -21,6 +22,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# Ensure YOLO detection model weights exist (auto-downloads if deploying to a new cloud container)
+ensure_model_weights()
 
 # ── Sidebar navigation ─────────────────────────────────────────────────────────
 with st.sidebar:

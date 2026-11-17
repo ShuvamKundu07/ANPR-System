@@ -34,6 +34,33 @@ from anpr.config import CROP_DIR, DETECTOR_CONFIDENCE, MODEL_PATH  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_MODEL_URL: str = (
+    "https://github.com/Muhammad-Zeerak-Khan/Automatic-License-Plate-Recognition-using-YOLOv8"
+    "/raw/main/license_plate_detector.pt"
+)
+
+
+def ensure_model_weights(dest_path: Union[str, Path, None] = None) -> Path:
+    """Ensure YOLO detection model weights exist, downloading if missing.
+
+    Args:
+        dest_path: Target path for .pt file. Defaults to config.MODEL_PATH.
+
+    Returns:
+        Path to the available weights file.
+    """
+    target = Path(dest_path) if dest_path else MODEL_PATH
+    if target.exists():
+        return target
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+    logger.info("Model weights missing at %s; downloading from approved repository...", target)
+    import urllib.request
+
+    urllib.request.urlretrieve(DEFAULT_MODEL_URL, str(target))
+    logger.info("Successfully downloaded YOLO weights to %s (size: %d bytes)", target, target.stat().st_size)
+    return target
+
 
 @dataclass(frozen=True)
 class Detection:
